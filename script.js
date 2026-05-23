@@ -1,15 +1,15 @@
 function operationResult() {
-	mathOperator = null;
+	waitingForSecondOperand = false;
 	const fullNumber = result.toString().split(".");
 	const integer = fullNumber[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	const decimal = fullNumber.length > 1 ? fullNumber.slice(1).join("") : null;
 
 	if (decimal !== null) {
 		preview.value = `${integer}.${decimal}`;
-	} else if (result === Infinity) {
+	} else if (result === Infinity || result === -Infinity) {
 		preview.value = "I’ve seen orange cats with a single shared brain cell";
 	} else {
-		preview.value = integer
+		preview.value = integer;
 	}
 }
 
@@ -22,6 +22,9 @@ let mathOperator = null;
 // ||RESULT
 let result = null;
 
+let waitingForSecondOperand = false;
+
+
 // ||OPERATE
 function operation() {
 	const rawNumber = preview.value.replace(/[^\d.-]/g, "");
@@ -31,35 +34,36 @@ function operation() {
 
 	if (Number.isNaN(currentNumber)) currentNumber = 0;
 
-	// ||PREVENT MULTIPLE OPERATION
-	if (currentNumber === result) {
-		mathOperator = this.value;
-		return;
-	}
+	if (waitingForSecondOperand) return;
 
 	if (firstOperand === null) {
 		firstOperand = currentNumber;
 	} else {
 		switch (mathOperator) {
 			case "+":
-				firstOperand = Math.round((firstOperand + currentNumber) * 1e9) / 1e9;
+				firstOperand = firstOperand + currentNumber;
 				break;
 			case "-":
-				firstOperand = Math.round((firstOperand - currentNumber) * 1e9) / 1e9;
+				firstOperand = firstOperand - currentNumber;
 				break;
 			case "x":
-				firstOperand = Math.round((firstOperand * currentNumber) * 1e9) / 1e9;
+				firstOperand = firstOperand * currentNumber;
 				break;
 			case "÷":
-				firstOperand = Math.round((firstOperand / currentNumber) * 1e9) / 1e9;
+				firstOperand = firstOperand / currentNumber;
 				break;
 		}
 	}
 
-	result = firstOperand;
+	result = Math.round((firstOperand) * 1e9) / 1e9;
+
+	// ||HANDLE RESULT AND PREVIEW
 	operationResult();
 
 	mathOperator = this.value;
+	waitingForSecondOperand = true;
+
+	newNumberArray = result.toString().split("");
 
 	// ||RESET DISPLAY
 	arrayNumbers.length = 0;
@@ -84,6 +88,7 @@ let arrayNumbers = [];
 
 // ||INPUT NUMBER FROM BUTTON
 function inputNumberButton() {
+	waitingForSecondOperand = false;
 	// ||STORE PREVIOUS VALUE LENGTH AND PREVIOUS CURSOR POSITION
 	let cursorPosition = preview.selectionStart;
 	const previousLength = preview.value.length;
@@ -174,11 +179,15 @@ function inputNumberKeyboard(event) {
 	this.setSelectionRange(cursorPosition, cursorPosition);
 }
 
+let newNumberArray;
+
 // ||DELETE NUMBER
 function deleteNumber() {
 	let cursorPosition = preview.selectionStart;
 	const originalLength = preview.value.length;
 	const previousCursor = cursorPosition - 1;
+
+	waitingForSecondOperand = false;
 
 	if (previousCursor === -1) return;
 
@@ -186,6 +195,28 @@ function deleteNumber() {
 		.slice(0, previousCursor)
 		.replace(/,/g, "").length;
 
+if (arrayNumbers.length === 0) {
+
+	newNumberArray.splice(rawNumber, 1);
+
+	const newFullNumber = newNumberArray.join("").split(".");
+	const newInteger = newFullNumber[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	const newDecimal =
+		newFullNumber.length > 1 ? newFullNumber.slice(1).join("") : null;
+
+	if (newDecimal !== null) {
+		preview.value = `${newInteger}.${newDecimal}`;
+	} else {
+		preview.value = newInteger;
+	}
+
+	firstOperand = Number(preview.value.replace(/[^\d.]/g, ""));
+	if (firstOperand === 0) firstOperand = null;
+
+	const newLength = preview.value.length;
+	cursorPosition = cursorPosition + (newLength - originalLength);
+	preview.setSelectionRange(cursorPosition, cursorPosition);
+} else {
 	arrayNumbers.splice(rawNumber, 1);
 
 	const fullNumber = arrayNumbers.join("").split(".");
@@ -197,10 +228,11 @@ function deleteNumber() {
 	} else {
 		preview.value = integer;
 	}
-
 	const newLength = preview.value.length;
 	cursorPosition = cursorPosition + (newLength - originalLength);
 	preview.setSelectionRange(cursorPosition, cursorPosition);
+}
+
 }
 
 function negateNumber() {
