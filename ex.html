@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Number Formatter</title>
+	</head>
+	<body>
+		<label for="numberInput">Enter Number:</label>
+		<!-- Use type="text" because type="number" does not allow commas -->
+		<input type="text" id="numberInput" placeholder="e.g., 1,234.56">
+
+		<script>
+			const inputElement = document.getElementById("numberInput");
+
+			inputElement.addEventListener("input", function (e) {
+				// Save the current cursor position to prevent it from jumping to the end
+				let cursorPosition = this.selectionStart;
+				const originalLength = this.value.length;
+
+				// 1. Remove all characters except digits and periods
+				let cleanValue = this.value.replace(/[^0-9.]/g, "");
+console.log(cleanValue);
+				// 2. Handle multiple decimal points (split by the first dot only)
+				const parts = cleanValue.split(".");
+				let integerPart = parts[0];
+				// If there are multiple dots, join the rest into a single decimal string
+				let decimalPart = parts.length > 1 ? parts.slice(1).join("") : null;
+
+				// 3. Prevent multiple leading zeros (e.g., 00005 -> 5, but keep a single 0)
+				integerPart = integerPart.replace(/^0+(?=\d)/, "");
+
+				// 4. Add commas to the integer part every 3 digits
+				integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+				// 5. Recombine the integer and decimal parts
+				if (decimalPart !== null) {
+					this.value = integerPart + "." + decimalPart;
+				} else {
+					this.value = integerPart;
+				}
+
+				// 6. Restore the cursor position smoothly
+				const newLength = this.value.length;
+				cursorPosition = cursorPosition + (newLength - originalLength);
+				this.setSelectionRange(cursorPosition, cursorPosition);
+			});
+		</script>
+	</body>
+</html>

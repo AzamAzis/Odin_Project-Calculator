@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+
+  <!-- ||META TAGS|| -->
+  <meta name="description" content="A simple calculator built with HTML, CSS, and JS">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CALCULATOR">
+  <meta property="og:description" content="A simple calculator built with HTML, CSS, and JS">
+  <meta property="og:image" content="./calculator.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="">
+
+  <!-- ||META TAGS TWITTER/X|| -->
+  <meta name="twitter:site" content="@">
+  <meta name="twitter:title" content="CALCULATOR">
+  <meta name="twitter:description" content="A simple calculator built with HTML, CSS, and JS">
+  <meta name="twitter:image" content="./calculator.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- ||Favicon|| -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+
+  <!-- ||FONT FAMILY|| -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- ||CSS & JS|| -->
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- ||SCREEN|| -->
+  <form class="box">
+    <div class="screen">
+      <input class="preview" type="text" inputmode="none">
+    </div>
+
+    <!-- ||BUTTONS|| -->
+    <div class="buttons-container">
+      <div class="line">
+        <input class="button clear" type="reset" value="AC">
+        <input class="button negate" type="button" value="+/-">
+        <input class="button percent" type="button" value="%">
+        <input class="button operator" type="button" value="÷">
+      </div>
+      <div class="line">
+        <input class="button number" type="button" value="7">
+        <input class="button number" type="button" value="8">
+        <input class="button number" type="button" value="9">
+        <input class="button operator" type="button" value="x">
+      </div>
+      <div class="line">
+        <input class="button number" type="button" value="4">
+        <input class="button number" type="button" value="5">
+        <input class="button number" type="button" value="6">
+        <input class="button operator" type="button" value="-">
+      </div>
+      <div class="line">
+        <input class="button number" type="button" value="1">
+        <input class="button number" type="button" value="2">
+        <input class="button number" type="button" value="3">
+        <input class="button operator" type="button" value="+">
+      </div>
+      <div class="line">
+        <input class="button number" type="button" value="0">
+        <input class="button number decimal" type="button" value=".">
+        <input class="button operator equal" type="button" value="=">
+        <button class="button backspace" type="button"></button>
+      </div>
+    </div>
+  </form>
+</body>
+</html>
