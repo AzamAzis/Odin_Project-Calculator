@@ -9,7 +9,6 @@ This is a solution to the [Project: Calculator](https://www.theodinproject.com/l
   - [Overview](#overview)
     - [The challenge](#the-challenge)
     - [Screenshot](#screenshot)
-    - [Links](#links)
   - [My process](#my-process)
     - [Built with](#built-with)
     - [What I learned](#what-i-learned)
@@ -36,11 +35,6 @@ This is a solution to the [Project: Calculator](https://www.theodinproject.com/l
 ### Screenshot
 
 ![Calculator](./calculator.png)
-
-### Links
-
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
 
 ## My process
 
