@@ -7,7 +7,7 @@ function operationResult() {
 	if (decimal !== null) {
 		preview.value = `${integer}.${decimal}`;
 	} else if (result === Infinity || result === -Infinity) {
-		preview.value = "I’ve seen orange cats with a single shared brain cell";
+		preview.value = "Cat is judging u";
 	} else {
 		preview.value = integer;
 	}
