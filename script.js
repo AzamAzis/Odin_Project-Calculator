@@ -1,4 +1,5 @@
 function operationResult() {
+	if (result === null) return;
 	waitingForSecondOperand = false;
 	const fullNumber = result.toString().split(".");
 	const integer = fullNumber[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -13,6 +14,10 @@ function operationResult() {
 	}
 }
 
+function finalResult() {
+	finalOperation = true;
+}
+
 // ||OPERAND
 let firstOperand = null;
 
@@ -21,6 +26,7 @@ let mathOperator = null;
 
 // ||RESULT
 let result = null;
+let finalOperation = false;
 
 let waitingForSecondOperand = false;
 
@@ -61,8 +67,14 @@ function operation() {
 	operationResult();
 
 	mathOperator = this.value;
-	waitingForSecondOperand = true;
 
+		if (mathOperator === "+" || mathOperator === "-") {
+		applyPercent = true;
+	} else {
+		applyPercent = false;
+	}
+
+	waitingForSecondOperand = true;
 	newNumberArray = result.toString().split("");
 
 	// ||RESET DISPLAY
@@ -85,9 +97,14 @@ const backSpace = document.querySelector(".backspace");
 
 // ||STORE INPUT NUMBER
 let arrayNumbers = [];
+let newNumberArray;
 
 // ||INPUT NUMBER FROM BUTTON
 function inputNumberButton() {
+	if (finalOperation) {
+		firstOperand = null;
+		finalOperation = false;
+	}
 	waitingForSecondOperand = false;
 	// ||STORE PREVIOUS VALUE LENGTH AND PREVIOUS CURSOR POSITION
 	let cursorPosition = preview.selectionStart;
@@ -134,7 +151,7 @@ function inputNumberButton() {
 
 // ||INPUT NUMBER FROM KEYBOARD
 function inputNumberKeyboard(event) {
-	if (this.value === 13) return;
+	waitingForSecondOperand = false;
 
 	preview.focus();
 	let cursorPosition = this.selectionStart;
@@ -179,8 +196,6 @@ function inputNumberKeyboard(event) {
 	this.setSelectionRange(cursorPosition, cursorPosition);
 }
 
-let newNumberArray;
-
 // ||DELETE NUMBER
 function deleteNumber() {
 	let cursorPosition = preview.selectionStart;
@@ -196,7 +211,6 @@ function deleteNumber() {
 		.replace(/,/g, "").length;
 
 if (arrayNumbers.length === 0) {
-
 	newNumberArray.splice(rawNumber, 1);
 
 	const newFullNumber = newNumberArray.join("").split(".");
@@ -217,6 +231,8 @@ if (arrayNumbers.length === 0) {
 	cursorPosition = cursorPosition + (newLength - originalLength);
 	preview.setSelectionRange(cursorPosition, cursorPosition);
 } else {
+	// ||DELETE OPERATION RESULT
+	result = arrayNumbers;
 	arrayNumbers.splice(rawNumber, 1);
 
 	const fullNumber = arrayNumbers.join("").split(".");
@@ -228,11 +244,11 @@ if (arrayNumbers.length === 0) {
 	} else {
 		preview.value = integer;
 	}
+
 	const newLength = preview.value.length;
 	cursorPosition = cursorPosition + (newLength - originalLength);
 	preview.setSelectionRange(cursorPosition, cursorPosition);
-}
-
+	}
 }
 
 function negateNumber() {
@@ -245,13 +261,25 @@ function negateNumber() {
 	}
 }
 
+// ||APPLY PERCENT
+let applyPercent = false;
+
 function percents() {
-	const fullNumber = parseFloat(arrayNumbers.join(""));
+	if (!applyPercent) {
+		const fullNumber = parseFloat(arrayNumbers.join(""));
+		const newNumber = !Number.isNaN(fullNumber) ? fullNumber : result;
+		const dividedByHundred = Math.round((newNumber / 100) * 1e9) / 1e9;
 
-	if (Number.isNaN(fullNumber)) return;
+		arrayNumbers = dividedByHundred.toString().split("");
+		firstOperand = dividedByHundred;
+		result = dividedByHundred;
+	} else if (firstOperand !== null && applyPercent === true) {
+		const percentResult =
+			Math.round(
+				(Number(newNumberArray.join("")) * preview.value / 100) * 1e9) / 1e9;
 
-	const dividedByHundred = Math.round((fullNumber / 100) * 1e9) / 1e9;
-	arrayNumbers = dividedByHundred.toString().split("");
+		arrayNumbers = percentResult.toString().split("");
+	}
 
 	const newFullNumber = arrayNumbers.join("").split(".");
 	const integer = newFullNumber[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -315,3 +343,4 @@ operators.forEach((operator) => {
 
 // ||EQUAL BUTTON
 equal.addEventListener("click", operationResult);
+equal.addEventListener("click", finalResult);
