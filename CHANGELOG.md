@@ -25,4 +25,5 @@
 
 ## Bug Fixes
 
-- Fix: Incorrect calculation when pressing the equals sign directly after an operand
+- Fix: incorrect calculation when pressing the equals sign directly after an operand
+- Fix: math operation bugs

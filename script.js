@@ -21,6 +21,8 @@ let mathOperator = null;
 let firstOperator = null;
 let secondOperator = null;
 
+let wait = false;
+
 // ||RESULT
 let result = null;
 
@@ -33,9 +35,9 @@ function operation() {
 
 	if (Number.isNaN(currentNumber)) currentNumber = 0;
 
+	console.log({firstOperator, secondOperator, result});
 	firstOperator = this.value;
-
-	if (firstOperator === secondOperator && secondOperator !== null) return;
+	if (firstOperator === secondOperator && this.value !== "=" && wait === true) return;
 
 	if (firstOperatorOperand === null) {
 		firstOperatorOperand = currentNumber;
@@ -58,10 +60,14 @@ function operation() {
 
 	result = Math.round((firstOperatorOperand) * 1e9) / 1e9;
 
+// ||HANDLE RESULT AND PREVIEW
 	newNumberArray = result.toString().split("");
 	operationResult();
 
+	wait = true;
+
 	mathOperator = this.value;
+	// firstOperator = mathOperator;
 	secondOperator = mathOperator;
 
 		if (mathOperator === "+" || mathOperator === "-") {
@@ -70,12 +76,10 @@ function operation() {
 		applyPercent = false;
 	}
 
-	waitingForsecondOperatorOperand = true;
-
 	// ||RESET DISPLAY
 	arrayNumbers.length = 0;
 
-	// ||HANDLE RESULT AND PREVIEW
+	
 }
 
 // ||SCREEN
@@ -98,7 +102,7 @@ let newNumberArray;
 
 // ||INPUT NUMBER FROM BUTTON
 function inputNumberButton() {
-	waitingForsecondOperatorOperand = false;
+	wait = false;
 	// ||STORE PREVIOUS VALUE LENGTH AND PREVIOUS CURSOR POSITION
 	let cursorPosition = preview.selectionStart;
 	const previousLength = preview.value.length;
@@ -144,8 +148,7 @@ function inputNumberButton() {
 
 // ||INPUT NUMBER FROM KEYBOARD
 function inputNumberKeyboard(event) {
-	waitingForsecondOperatorOperand = false;
-
+	wait = false;
 	preview.focus();
 	let cursorPosition = this.selectionStart;
 	const originalLength = this.value.length;
@@ -342,4 +345,6 @@ operators.forEach((operator) => {
 equal.addEventListener("click", () => {
 	operation();
 	mathOperator = null;
+	firstOperator = null;
+	secondOperator = null;
 });
