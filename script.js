@@ -57,7 +57,7 @@ function operation() {
 				break;
 		}
 	}
-
+	if (Number.isNaN(firstOperatorOperand)) firstOperatorOperand = 0;
 	result = Math.round((firstOperatorOperand) * 1e9) / 1e9;
 
 // ||HANDLE RESULT AND PREVIEW
@@ -296,11 +296,6 @@ buttons.forEach((button) => {
 		event.preventDefault();
 		preview.focus();
 	});
-
-	button.addEventListener("click", () => {
-		// console.log(result);
-	});
-});
 
 // ||INPUT NUMBER
 numbers.forEach((number) => {
