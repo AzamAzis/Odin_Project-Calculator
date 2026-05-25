@@ -16,3 +16,13 @@
 
 - Fix: percentage operation
 - Fix: backspace behavior when deleting percentage operation
+
+## 1.1.2 (2025-5-25)
+
+## Features
+
+- Update: buttons' transition speed
+
+## Bug Fixes
+
+- Fix: Incorrect calculation when pressing the equals sign directly after an operand

@@ -1,6 +1,5 @@
 function operationResult() {
 	if (result === null) return;
-	waitingForSecondOperand = false;
 	const fullNumber = result.toString().split(".");
 	const integer = fullNumber[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	const decimal = fullNumber.length > 1 ? fullNumber.slice(1).join("") : null;
@@ -14,22 +13,16 @@ function operationResult() {
 	}
 }
 
-function finalResult() {
-	finalOperation = true;
-}
-
 // ||OPERAND
-let firstOperand = null;
+let firstOperatorOperand = null;
 
 // ||OPERATOR
 let mathOperator = null;
+let firstOperator = null;
+let secondOperator = null;
 
 // ||RESULT
 let result = null;
-let finalOperation = false;
-
-let waitingForSecondOperand = false;
-
 
 // ||OPERATE
 function operation() {
@@ -40,33 +33,36 @@ function operation() {
 
 	if (Number.isNaN(currentNumber)) currentNumber = 0;
 
-	if (waitingForSecondOperand) return;
+	firstOperator = this.value;
 
-	if (firstOperand === null) {
-		firstOperand = currentNumber;
+	if (firstOperator === secondOperator && secondOperator !== null) return;
+
+	if (firstOperatorOperand === null) {
+		firstOperatorOperand = currentNumber;
 	} else {
 		switch (mathOperator) {
 			case "+":
-				firstOperand = firstOperand + currentNumber;
+				firstOperatorOperand = firstOperatorOperand + currentNumber;
 				break;
 			case "-":
-				firstOperand = firstOperand - currentNumber;
+				firstOperatorOperand = firstOperatorOperand - currentNumber;
 				break;
 			case "x":
-				firstOperand = firstOperand * currentNumber;
+				firstOperatorOperand = firstOperatorOperand * currentNumber;
 				break;
 			case "÷":
-				firstOperand = firstOperand / currentNumber;
+				firstOperatorOperand = firstOperatorOperand / currentNumber;
 				break;
 		}
 	}
 
-	result = Math.round((firstOperand) * 1e9) / 1e9;
+	result = Math.round((firstOperatorOperand) * 1e9) / 1e9;
 
-	// ||HANDLE RESULT AND PREVIEW
+	newNumberArray = result.toString().split("");
 	operationResult();
 
 	mathOperator = this.value;
+	secondOperator = mathOperator;
 
 		if (mathOperator === "+" || mathOperator === "-") {
 		applyPercent = true;
@@ -74,11 +70,12 @@ function operation() {
 		applyPercent = false;
 	}
 
-	waitingForSecondOperand = true;
-	newNumberArray = result.toString().split("");
+	waitingForsecondOperatorOperand = true;
 
 	// ||RESET DISPLAY
 	arrayNumbers.length = 0;
+
+	// ||HANDLE RESULT AND PREVIEW
 }
 
 // ||SCREEN
@@ -101,11 +98,7 @@ let newNumberArray;
 
 // ||INPUT NUMBER FROM BUTTON
 function inputNumberButton() {
-	if (finalOperation) {
-		firstOperand = null;
-		finalOperation = false;
-	}
-	waitingForSecondOperand = false;
+	waitingForsecondOperatorOperand = false;
 	// ||STORE PREVIOUS VALUE LENGTH AND PREVIOUS CURSOR POSITION
 	let cursorPosition = preview.selectionStart;
 	const previousLength = preview.value.length;
@@ -151,7 +144,7 @@ function inputNumberButton() {
 
 // ||INPUT NUMBER FROM KEYBOARD
 function inputNumberKeyboard(event) {
-	waitingForSecondOperand = false;
+	waitingForsecondOperatorOperand = false;
 
 	preview.focus();
 	let cursorPosition = this.selectionStart;
@@ -202,7 +195,7 @@ function deleteNumber() {
 	const originalLength = preview.value.length;
 	const previousCursor = cursorPosition - 1;
 
-	waitingForSecondOperand = false;
+	waitingForsecondOperatorOperand = false;
 
 	if (previousCursor === -1) return;
 
@@ -224,8 +217,8 @@ if (arrayNumbers.length === 0) {
 		preview.value = newInteger;
 	}
 
-	firstOperand = Number(preview.value.replace(/[^\d.]/g, ""));
-	if (firstOperand === 0) firstOperand = null;
+	firstOperatorOperand = Number(preview.value.replace(/[^\d.]/g, ""));
+	if (firstOperatorOperand === 0) firstOperatorOperand = null;
 
 	const newLength = preview.value.length;
 	cursorPosition = cursorPosition + (newLength - originalLength);
@@ -271,9 +264,9 @@ function percents() {
 		const dividedByHundred = Math.round((newNumber / 100) * 1e9) / 1e9;
 
 		arrayNumbers = dividedByHundred.toString().split("");
-		firstOperand = dividedByHundred;
+		firstOperatorOperand = dividedByHundred;
 		result = dividedByHundred;
-	} else if (firstOperand !== null && applyPercent === true) {
+	} else if (firstOperatorOperand !== null && applyPercent === true) {
 		const percentResult =
 			Math.round(
 				(Number(newNumberArray.join("")) * preview.value / 100) * 1e9) / 1e9;
@@ -300,6 +293,10 @@ buttons.forEach((button) => {
 		event.preventDefault();
 		preview.focus();
 	});
+
+	button.addEventListener("click", () => {
+		// console.log(result);
+	});
 });
 
 // ||INPUT NUMBER
@@ -322,7 +319,7 @@ preview.addEventListener("keydown", (event) => {
 // ||CLEAR BUTTON
 clear.addEventListener("click", () => {
 	arrayNumbers.length = 0;
-	firstOperand = null;
+	firstOperatorOperand = null;
 	mathOperator = null;
 	result = null;
 });
@@ -342,5 +339,7 @@ operators.forEach((operator) => {
 });
 
 // ||EQUAL BUTTON
-equal.addEventListener("click", operationResult);
-equal.addEventListener("click", finalResult);
+equal.addEventListener("click", () => {
+	operation();
+	mathOperator = null;
+});
