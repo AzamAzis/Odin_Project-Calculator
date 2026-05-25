@@ -78,8 +78,6 @@ function operation() {
 
 	// ||RESET DISPLAY
 	arrayNumbers.length = 0;
-
-	
 }
 
 // ||SCREEN
@@ -198,8 +196,6 @@ function deleteNumber() {
 	const originalLength = preview.value.length;
 	const previousCursor = cursorPosition - 1;
 
-	waitingForsecondOperatorOperand = false;
-
 	if (previousCursor === -1) return;
 
 	const rawNumber = preview.value
@@ -296,6 +292,7 @@ buttons.forEach((button) => {
 		event.preventDefault();
 		preview.focus();
 	});
+});
 
 // ||INPUT NUMBER
 numbers.forEach((number) => {
